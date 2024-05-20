@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Login.css';
-import { auth, provider } from '../firebase'; // Make sure to import "auth" from the correct path
+import { auth, provider } from '../firebase';
 
 function Login() {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const login = (e) => {
     e.preventDefault();
     auth.signInWithEmailAndPassword(email, password)
@@ -10,36 +15,23 @@ function Login() {
         console.log(auth);
         setEmail("");
         setPassword("");
+        navigate('/quora');
       })
       .catch((err) => {
-        alert(err);
+        alert(err.message);
       });
   };
 
   const signIn = () => {
-   auth.signInWithPopup(provider).catch((err) => {
-      alert(err);
+    auth.signInWithPopup(provider).catch((err) => {
+      alert(err.message);
     });
     console.log(auth);
   };
 
-  const signUp = (e) => {
-    e.preventDefault();
-    auth.createUserWithEmailAndPassword(email, password)
-      .then((auth) => {
-        if (auth) {
-          console.log(auth);
-          setEmail("");
-          setPassword("");
-        }
-      })
-      .catch((err) => {
-        alert(err);
-      });
+  const signUp = () => {
+    navigate('/register');
   };
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
 
   return (
     <div className='Login'>
@@ -52,22 +44,20 @@ function Login() {
               type="text"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              // placeholder="Email"
               id="username"
             />
           </div>
           <div className="user-box">
-          <label className="label_pass" htmlFor="password">Password</label>
+            <label className="label_pass" htmlFor="password">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              // placeholder="Password"
               id="password"
             />
           </div>
           <button type='submit' onClick={login}>Login</button>
-          <button onClick={signUp}>Sign Up</button>
+          <button type='button' onClick={signUp}>Sign Up</button>
         </form>
       </div>
     </div>

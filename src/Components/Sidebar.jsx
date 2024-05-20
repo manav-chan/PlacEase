@@ -10,10 +10,15 @@ function Sidebar() {
       <button>create space</button>
       </div> */}
         <SidebarContent title="Announcements"/>
-        <SidebarContent title="TCS"/>
+        <SidebarContent title="Amazon"/>
+        <SidebarContent title="Microsoft"/>
+        <SidebarContent title="Google"/>
+        <SidebarContent title="ZScaler"/>
         <SidebarContent title="Infosys"/>
         <SidebarContent title="Wipro"/>
         <SidebarContent title="Morgan Stanley"/>
+        <SidebarContent title="JP Morgan"/>
+        <SidebarContent title="Accenture"/>
     </div>
   )
 }

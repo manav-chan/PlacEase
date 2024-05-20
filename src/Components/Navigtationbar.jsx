@@ -70,21 +70,18 @@ function Navigtationbar() {
         <div className="nav-icon">
           <GroupsOutlined />
         </div> */}
-        <div className="nav-icon">
-          <NotificationsOutlined />
-        </div>
+        
       </div>
-      <div className="nav-search">
-        <Search />
-        <input type="text" placeholder="Search Question" />
-      </div>
+     
       <div className="nav-remaining">
         <div className="profile-avatar">
           <Avatar style={styleForAvatar} src={user.photo} />
         </div>
-        <div className="nav-language">
-          <Language sx={{ fontSize: 32 }} />
+
+        <div>
+          <h1>Welcome, Student</h1>
         </div>
+        
         <div className="nav-button">
           <Button
             onClick={() => {
