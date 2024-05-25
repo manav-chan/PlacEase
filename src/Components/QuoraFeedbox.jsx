@@ -14,6 +14,7 @@ import {
   selectQuestionName,
   setQuestionInfo,
 } from "../features/counter/questionSlice";
+import { auth } from "../firebase";
 import db from "../firebase";
 import { selectUser } from "../features/counter/userSlice";
 import firebase from "firebase/compat/app";
@@ -122,6 +123,7 @@ function QuoraFeedbox(props) {
         <div className="profile-info-text">
           <h5>{props.displayname}</h5>
         </div>
+
         <div className="time">
           <p>{new Date(props.PostTime?.toDate()).toLocaleDateString()}</p>
         </div>

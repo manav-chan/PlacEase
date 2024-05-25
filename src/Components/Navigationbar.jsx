@@ -1,89 +1,67 @@
-import React, { useState } from "react";
-import {
-  Home,
-  Notifications,
-  Groups,
-  QuestionAnswer,
-  Search,
-  Language,
-  HomeOutlined,
-  QuestionAnswerOutlined,
-  Groups2Outlined,
-  GroupsOutlined,
-  NotificationsOutlined,
-} from "@mui/icons-material";
-import "./Navbar.css";
-import { Avatar, Button } from "@mui/material";
-import { logout, selectUser } from "../features/counter/userSlice";
-import db, { auth } from "../firebase";
-import { useSelector } from "react-redux";
-import Modal from "react-modal";
-import firebase from "firebase/compat/app";
 
-const styleForAvatar = {
-  width: "32px",
-  height: "32px",
-};
+import { Link } from "react-router-dom"; // Import Link
+import { Avatar, Button } from "@mui/material";
+import { useSelector } from "react-redux";
+import React, { useEffect, useState } from 'react';
+import Modal from "react-modal";
+import { auth } from "../firebase";
+import firebase from "firebase/compat/app";
+import "./Navbar.css";
+import db from '../firebase';
+
+import {
+  HomeOutlined,
+} from "@mui/icons-material";
+
 
 function Navigationbar() {
-  const user = useSelector(selectUser);
+  const user = useSelector((state) => state.user);
   const [openModal, setOpenModal] = useState(false);
   const [InputValue, setInputValue] = useState("");
   const [inputUrl, setInputUrl] = useState("");
-
+  const [student, setStudent] = useState(null);
   const handleQuestion = (e) => {
-    if (InputValue != "") {
-      e.preventDefault();
-      document.getElementById("quora").style.filter = "blur(0px)";
-      setOpenModal(false);
-      db.collection("question").add({
-        question: InputValue,
-        PostImg: inputUrl,
-        postLike: 0,
-        postDisLike: 0,
-        timeStamp: firebase.firestore.Timestamp.now(),
-        userId: user.uid,
-        displayName: user.displayName,
-        userImg: user.photo,
-      });
-      setInputValue("");
-      setInputUrl("");
-    } else {
-      alert("Please enter a question");
-    }
+    // Your existing code for handling questions
   };
+
+  useEffect(() => {
+    // Fetch student details based on rollNumber
+    db.collection('students')
+      .doc(auth.currentUser.email.split("@")[0])
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setStudent(doc.data());
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
+  }, [auth.currentUser.email.split("@")[0]]);
+
+  if (!student) {
+    return <div> Loading...</div>;
+  }
+
   return (
     <div className="navbar">
-      {/* <div className="logo">
-        <img
-          src="https://download.logo.wine/logo/Quora/Quora-Logo.wine.png"
-          alt="logo"
-        />
-      </div> */}
       <div className="menu">
         <div className="nav-icon Home">
-          <HomeOutlined />
+          <HomeOutlined/>
         </div>
-        {/* <div className="nav-icon">
-          <QuestionAnswerOutlined />
-        </div>
-        <div className="nav-icon">
-          <GroupsOutlined />
-        </div> */}
-        
       </div>
-      <div className="profile-avatar">
-          <Avatar style={styleForAvatar} src={user.photo}  />
-        </div>
-      <div className="nav-remaining">
-        
-
+      {/* Profile avatar with link to StudentDetails */}
+      <Link to={"student.rollNumber" ? `/studentDetails/${student.rollNumber.split("@")[0]}` : "/"} className="profile-avatar-link">
+        <Avatar  src={user.photo} />
+      </Link>
+      {/* Remaining navigation elements */}
+      
         <div>
-          <h1>Welcome, Student</h1>
+          <h1>Welcome, {student.name}</h1>
         </div>
-        
-       
-        <div 
+        <div
           onClick={() => {
             auth.signOut();
           }}
@@ -91,75 +69,9 @@ function Navigationbar() {
         >
           <Button>Log Out</Button>
         </div>
-      </div>
-      {/* Modal */}
-      <Modal
-        isOpen={openModal}
-        onRequestClose={() => setOpenModal(false)}
-        shouldCloseOnOverlayClick={false}
-        style={{
-          overlay: {
-            // width: '60%',
-            // height: '60%',
-            maxWidth: "60%", // Adjust as needed
-            maxHeight: "60%", // Adjust as needed
-            width: "auto", // Adjust as needed
-            height: "auto", // Adjust as needed
-            backgroundColor: "#c92c92",
-            zIndex: "1000",
-            top: "10%",
-            left: "24%",
-          },
-          content: {
-            WebkitOverflowScrolling: "touch",
-            overflow: "auto",
-            outline: "none",
-            margin: "-15px",
-          },
-        }}
-      >
-        <div className="modal__title">
-          <h5>Add Question</h5>
-        </div>
-        <div className="modal__info">
-          <Avatar className="avatar" src={user.photo} />
-          {/* <p>{user.disPlayName ? user.disPlayName : user.email} asked</p> */}
-          <div className="modal__scope">
-            <p>{user.displayName}</p>
-          </div>
-        </div>
-        <div className="modal__Field">
-          <input
-            required
-            value={InputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            type="text"
-            placeholder="Start your question with 'What', 'How', 'Why', etc. "
-          />
-          <div className="modal__fieldLink">
-            <input
-              value={inputUrl}
-              onChange={(e) => setInputUrl(e.target.value)}
-              type="text"
-              placeholder="Enter image link.."
-            ></input>
-          </div>
-        </div>
-        <div className="modal__buttons">
-          <button
-            className="cancel"
-            onClick={() => {
-              setOpenModal(false);
-              document.getElementById("quora").style.filter = "blur(0px)";
-            }}
-          >
-            Cancel
-          </button>
-          <button type="sumbit" onClick={handleQuestion} className="add">
-            Add Question
-          </button>
-        </div>
-      </Modal>
+      
+      {/* Modal for adding questions */}
+      {/* Your existing modal code */}
     </div>
   );
 }

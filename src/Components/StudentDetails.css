@@ -1,0 +1,20 @@
+/* StudentDetails.css */
+
+/* Add your CSS styles for StudentDetails component here */
+.student-details-container {
+  height: 100vh;
+  width: 100vw;
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .student-details-container h1 {
+    margin-bottom: 10px;
+  }
+  
+  .student-details-item {
+    margin-bottom: 10px;
+  }
+  

@@ -11,14 +11,14 @@ function QuoraDefaultBox({ selectedTitle }) {
   const user = useSelector(selectUser);
 
   const handleQuestion = () => {
-    if (Question !== '') {
+    if (Question !== "") {
       db.collection("question").add({
         question: Question,
         timeStamp: firebase.firestore.Timestamp.now(),
         userId: user.uid,
         displayName: user.displayName,
         userImg: user.photo,
-        category: selectedTitle,  // Include the selected category
+        category: selectedTitle, // Include the selected category
       });
       setquestion("");
     } else {
@@ -28,30 +28,19 @@ function QuoraDefaultBox({ selectedTitle }) {
 
   return (
     <div className="Quora-Box">
-      <Avatar src={auth.currentUser.photoURL} />
+      <Avatar src={auth.currentUser.photoURL} className="quora-avatar" />
       <div className="QuoraBox-Info">
         <input
           type="text"
           value={Question}
           onChange={(e) => setquestion(e.target.value)}
-          placeholder="What do you want share or ask?"
+          placeholder="Share something..."
+          className="quora-input"
         />
-        <div className="QuoraBox-function">
-          <div className="fun-btn">
-            <button type="button" onClick={handleQuestion}>
-              Ask
-            </button>
-          </div>
-          <div className="fun-btn">
-            <button type="button" onClick={handleQuestion}>Answer</button>
-          </div>
-          <div className="fun-btn">
-            <button type="button" onClick={handleQuestion}>
-              Post
-            </button>
-          </div>
-        </div>
       </div>
+      <button type="button" onClick={handleQuestion} >
+        Post
+      </button>
     </div>
   );
 }

@@ -22,18 +22,21 @@ body {
   
   .sidebar {
     flex: 0 0 250px; /* Sidebar takes 250px of width */
-    margin: 0 10px; /* Adding margin on left and right */
+    padding: 0 10px; /* Adding margin on left and right */
     background-color: black;
 
   }
   
   .main-content {
     flex-grow: 1;
-    margin-left: 30px;
-    margin-right: 50px;
+    padding-top: 20px;
+    padding-left: 30px;
+    padding-right: 50px;
+    margin-right: 30px;
     display: flex;
     flex-direction: column;
-    background-color: black;
+    background-color: green;
+    border-radius: 50px;
   }
   
   @media (max-width: 477px) {

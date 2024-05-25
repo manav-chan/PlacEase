@@ -1,56 +1,48 @@
-.Quora-Box{
+
+  
+  /* Additional styles for QuoraDefaultBox */
+  .Quora-Box {
+    width: 69%;
     display: flex;
-    border: 1px solid #ff2600;
-    border-radius: 5px;
+    flex-direction: row;
+    align-items: center;
     background-color: black;
+    padding: 10px 20px;
+    border-radius: 40px;
+    margin-bottom: 20px;
+    align-self: center;
+  }
+  
+  .quora-avatar {
+    margin: 10px 20px;
+  }
+  
+  .QuoraBox-Info {
+    width: 100%;
+    flex-grow: 0.4;
+  }
+  
+  .quora-input {
+    font-size: large;
+    width: 100%;
     padding: 10px;
-    gap: 1.4rem;
-    border-radius: 5px;
-}
-.QuoraBox-Info{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
-    padding-top: 5px;
-}
-.Quora-Box img{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-.QuoraBox-Info input{
-    width: 100%;
-    padding: 7px;
-    background-color: black;
-    color: white;
-    border: 0px solid #ff2600;
-
-}
-.QuoraBox-function .fun-btn{
-    width: 30%;
-}
-.fun-btn button{
-    width: 100%;
-    height: 100%;
-    font-size: 1rem;
-    cursor: pointer;
-    border: none;
-    border-radius: 13px;
-    padding: 6px;
-    background-color: #c23130;
-    color: white;
-
-    
-}
-.fun-btn button:hover{
-    background-color: #c92e29;
-}
-.QuoraBox-function{
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-}
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    outline: none;
+    margin-left: 10px;
+    font-weight: 550;
+  }
+  
+  .Quora-Box button {
+    color: black;
+    font-weight: bold;
+    font-size: medium;
+    border-radius: 20px;
+    background-color: white;
+    margin: 10px 15px 10px 70px;
+  }
+  
+  .Quora-Box button:hover {
+    background-color: green;
+  }
+  
