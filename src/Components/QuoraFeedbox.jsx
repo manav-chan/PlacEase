@@ -1,17 +1,11 @@
 import { Avatar, Modal } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./QuoraFeedBox.css";
-import Feed from "./Feed";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Chat,
   ChatOutlined,
-  Message,
-  Padding,
   ShareOutlined,
-  ThumbDown,
   ThumbDownOutlined,
-  ThumbUp,
   ThumbUpOutlined,
 } from "@mui/icons-material";
 import ReactModal from "react-modal";
@@ -33,57 +27,38 @@ function QuoraFeedbox(props) {
   const questionId = useSelector(selectQuestionId);
   const questionName = useSelector(selectQuestionName);
   const user = useSelector(selectUser);
-  //Like // Dislike
-  const [Like, setLike] = useState(false);
-  const [LikeCount, setLikeCount] = useState(0);
-  // const [Dislike, setDislike] = useState(false);
-  // const [DislikeCount, setDislikeCount] = useState(0);
 
-  const handelLike = () => {
-    if(questionId){
+  const [Like, setLike] = useState(false);
+  const [LikeCount, setLikeCount] = useState(props.postLike);
+
+  const handleLike = () => {
+    if (questionId) {
       if (!Like) {
         setLike(true);
-        setLikeCount(props.postLike + 1);
+        setLikeCount(LikeCount + 1);
         db.collection("question")
           .doc(questionId)
           .update({
-            postLike: LikeCount,
+            postLike: firebase.firestore.FieldValue.increment(1),
           })
           .catch((error) => {
-            console.error("Error adding document: ", error);
+            console.error("Error updating document: ", error);
           });
-        // if(DislikeCount!=0){
-        //   setDislikeCount(DislikeCount-1);
-        // }
       } else {
         setLike(false);
+        setLikeCount(LikeCount - 1);
+        db.collection("question")
+          .doc(questionId)
+          .update({
+            postLike: firebase.firestore.FieldValue.increment(-1),
+          })
+          .catch((error) => {
+            console.error("Error updating document: ", error);
+          });
       }
     }
   };
 
-  // const handelDislike=(e)=>{
-  //   if(!Dislike && DislikeCount==0){
-  //     setDislike(true);
-  //     setDislikeCount(DislikeCount+1);
-  //     if(LikeCount!=0){
-  //       setLikeCount(LikeCount-1);
-  //     }
-  //   }
-  //   else{
-  //     setDislike(false);
-  //   }
-  //   // sending like count to server
-  //   db.collection("question")
-  //   .doc(questionId)
-  //   .update({
-  //     postDisLike: DislikeCount,
-  //     })
-  //   .catch((error) => {
-  //       console.error("Error adding document: ", error);
-  //     });
-  // }
-
-  //fetching answer
   useEffect(() => {
     if (questionId) {
       db.collection("question")
@@ -98,11 +73,10 @@ function QuoraFeedbox(props) {
         });
     }
   }, [questionId]);
-  //
+
   const modalSave = (e) => {
-    if (AnswerVal != "") {
-      e.preventDefault();
-      // console.log(questionId,questionName);
+    e.preventDefault();
+    if (AnswerVal !== "") {
       if (questionId) {
         db.collection("question").doc(questionId).collection("answer").add({
           answer: AnswerVal,
@@ -120,15 +94,17 @@ function QuoraFeedbox(props) {
       alert("Please enter your answer");
     }
   };
+
   const answerBtn = () => {
     document.getElementById("quora").style.filter = "blur(8px)";
     setOpen(true);
   };
-  // cancel
+
   const modalCancel = () => {
     document.getElementById("quora").style.filter = "blur(0px)";
     setOpen(false);
   };
+
   return (
     <div
       className="Profile-FeedBox"
@@ -168,19 +144,7 @@ function QuoraFeedbox(props) {
                       : ""}
                   </p>
                 </div>
-                <p>
-                  {answer.answer}
-                  <br />
-                  <span>
-                    {/* <span style={{ color: "#b92b27" }}>
-                      {answer.displayName
-                        ? answer.displayName
-                        : answer.email}{" "}
-                      on{" "}
-                      {new Date(answers.timestamp?.toDate()).toLocaleString()}
-                    </span> */}
-                  </span>
-                </p>
+                <p>{answer.answer}</p>
               </div>
             ) : (
               ""
@@ -191,19 +155,15 @@ function QuoraFeedbox(props) {
 
       <div className="Feed-footer">
         <div className="vote">
-          <div className="Upvote" onClick={handelLike}>
+          <div className="Upvote" onClick={handleLike}>
             <ThumbUpOutlined />
-            <h4>{props.postLike}</h4>
+            <h4>{LikeCount}</h4>
           </div>
           <div className="break">|</div>
           <div className="Downvote">
             <ThumbDownOutlined />
-            {/* <h4>{props.postDisLike}</h4> */}
           </div>
         </div>
-        {/* <div className="Message">
-          <ChatOutlined />
-        </div> */}
         <div className="Share">
           <ShareOutlined />
         </div>
@@ -239,7 +199,7 @@ function QuoraFeedbox(props) {
               onChange={(e) => {
                 setAnswerVal(e.target.value);
               }}
-              placeholder="start your writing"
+              placeholder="Start your writing"
             />
             <input
               type="link"

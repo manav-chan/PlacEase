@@ -7,6 +7,18 @@
     color: white;
   }
   
+  .cred1{
+    display: flex;
+    gap: 70px  ;
+  }
+  .cred2{
+    display: flex;
+    gap: 130px  ;
+  }
+  .cred3{
+    display: flex;
+    gap: 120px  ;
+  }
   .register-box {
     background-color: black;
     padding: 20px;
@@ -38,7 +50,8 @@
     padding: 10px 15px;
     border: none;
     border-radius: 5px;
-    cursor: pointer;
+    cursor: pointer;  
+    margin-top: 40px;
   }
   
   button:hover {

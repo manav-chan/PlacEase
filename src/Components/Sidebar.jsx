@@ -1,26 +1,30 @@
 import React from 'react';
 import SidebarContent from './SidebarContent';
 import './Sidebar.css';
-import { Add } from '@mui/icons-material';
-function Sidebar() {
+
+function Sidebar({ setSelectedTitle }) {
+  const titles = [
+    "Announcements",
+    "Amazon",
+    "Microsoft",
+    "Google",
+    "ZScaler",
+    "Infosys",
+    "Wipro",
+    "Morgan Stanley",
+    "JP Morgan",
+    "Accenture"
+  ];
+
   return (
     <div className='Sidebar'>
-      {/* <div className='btn'>
-        <Add/>
-      <button>create space</button>
-      </div> */}
-        <SidebarContent title="Announcements"/>
-        <SidebarContent title="Amazon"/>
-        <SidebarContent title="Microsoft"/>
-        <SidebarContent title="Google"/>
-        <SidebarContent title="ZScaler"/>
-        <SidebarContent title="Infosys"/>
-        <SidebarContent title="Wipro"/>
-        <SidebarContent title="Morgan Stanley"/>
-        <SidebarContent title="JP Morgan"/>
-        <SidebarContent title="Accenture"/>
+      {titles.map((title) => (
+        <div key={title} onClick={() => setSelectedTitle(title)}>
+          <SidebarContent title={title} />
+        </div>
+      ))}
     </div>
-  )
+  );
 }
 
 export default Sidebar;

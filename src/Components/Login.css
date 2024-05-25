@@ -95,6 +95,8 @@
     margin: 5px;
     margin-bottom: 10px;
     background-color: #ff2600;
+    font-weight: bold;
+    color: black;
     border:  none;
     cursor: pointer;
     font-size:large ;

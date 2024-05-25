@@ -25,7 +25,7 @@ const styleForAvatar = {
   height: "32px",
 };
 
-function Navigtationbar() {
+function Navigationbar() {
   const user = useSelector(selectUser);
   const [openModal, setOpenModal] = useState(false);
   const [InputValue, setInputValue] = useState("");
@@ -72,27 +72,18 @@ function Navigtationbar() {
         </div> */}
         
       </div>
-     
-      <div className="nav-remaining">
-        <div className="profile-avatar">
-          <Avatar style={styleForAvatar} src={user.photo} />
+      <div className="profile-avatar">
+          <Avatar style={styleForAvatar} src={user.photo}  />
         </div>
+      <div className="nav-remaining">
+        
 
         <div>
           <h1>Welcome, Student</h1>
         </div>
         
-        <div className="nav-button">
-          <Button
-            onClick={() => {
-              document.getElementById("quora").style.filter = "blur(8px)";
-              setOpenModal(true);
-            }}
-          >
-            Add a question
-          </Button>
-        </div>
-        <div
+       
+        <div 
           onClick={() => {
             auth.signOut();
           }}
@@ -173,4 +164,4 @@ function Navigtationbar() {
   );
 }
 
-export default Navigtationbar;
+export default Navigationbar;
