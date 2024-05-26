@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import "./QuoraFeedBox.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  ChatOutlined,
+  CommentOutlined,
+  CommentRounded,
+  Padding,
   ShareOutlined,
   ThumbDownOutlined,
   ThumbUpOutlined,
@@ -31,6 +33,7 @@ function QuoraFeedbox(props) {
 
   const [Like, setLike] = useState(false);
   const [LikeCount, setLikeCount] = useState(props.postLike);
+  const [student, setStudent] = useState(null);
 
   const handleLike = () => {
     if (questionId) {
@@ -51,7 +54,7 @@ function QuoraFeedbox(props) {
         db.collection("question")
           .doc(questionId)
           .update({
-            postLike: firebase.firestore.FieldValue.increment(-1),
+            postLike: firebase.firestore.FieldValue.increment(1),
           })
           .catch((error) => {
             console.error("Error updating document: ", error);
@@ -83,8 +86,8 @@ function QuoraFeedbox(props) {
           answer: AnswerVal,
           timeStamp: firebase.firestore.Timestamp.now(),
           questionId: props.id,
-          userId: user.uid,
-          displayName: user.displayName,
+          userId: student.semester,
+          displayName: student.name,
           userImg: user.photo,
         });
         setAnswerVal("");
@@ -105,6 +108,26 @@ function QuoraFeedbox(props) {
     document.getElementById("quora").style.filter = "blur(0px)";
     setOpen(false);
   };
+  useEffect(() => {
+    // Fetch student details based on rollNumber
+    db.collection('students')
+      .doc(auth.currentUser.email.split("@")[0])
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setStudent(doc.data());
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
+  }, [auth.currentUser.email.split("@")[0]]);
+
+  if (!student) {
+    return <div></div>;
+  }
 
   return (
     <div
@@ -121,32 +144,36 @@ function QuoraFeedbox(props) {
       <div className="profile-info">
         <Avatar src={props.userImg} />
         <div className="profile-info-text">
-          <h5>{props.displayname}</h5>
+          <h3 className="name">{props.displayname}</h3>
+          <h3 className="semester">Semester: {props.userId}</h3>
         </div>
+        
 
         <div className="time">
-          <p>{new Date(props.PostTime?.toDate()).toLocaleDateString()}</p>
+          <p>{new Date(props.PostTime?.toDate()).toLocaleString().replace(","," - ")}</p>
         </div>
       </div>
       <div className="Question-feedbox">
         <h3>{props.question}</h3>
-        <button onClick={answerBtn}>Answer</button>
+        
       </div>
       <div className="post__answer">
         {GetAnswer.map(({ id, answer }) => (
           <div key={id} className="answer">
             {props.id === answer.questionId ? (
-              <div>
+              <div >
                 <div className="PostUser-Profile">
-                  <img src={answer.userImg} alt="" />
-                  <h5>{answer.displayName}</h5>
-                  <p>
+                  <Avatar  className="AvatarBelow" src={answer.userImg}  />
+                  <h4>{answer.displayName}</h4>
+                  <h4>Semester: {answer.userId}</h4>
+                  <p >
                     {answer.timeStamp
-                      ? new Date(answer.timeStamp?.toDate()).toLocaleString()
+                      ? new Date(answer.timeStamp?.toDate()).toLocaleString().replace(","," - ")
                       : ""}
                   </p>
                 </div>
-                <p>{answer.answer}</p>
+                <p className="para" >{answer.answer}</p>
+
               </div>
             ) : (
               ""
@@ -161,13 +188,11 @@ function QuoraFeedbox(props) {
             <ThumbUpOutlined />
             <h4>{LikeCount}</h4>
           </div>
-          <div className="break">|</div>
-          <div className="Downvote">
-            <ThumbDownOutlined />
-          </div>
+          
         </div>
         <div className="Share">
-          <ShareOutlined />
+          <CommentRounded/>
+          <button onClick={answerBtn}>Answer</button>
         </div>
         <ReactModal
           isOpen={open}
@@ -203,14 +228,7 @@ function QuoraFeedbox(props) {
               }}
               placeholder="Start your writing"
             />
-            <input
-              type="link"
-              value={InputUrl}
-              onChange={(e) => {
-                setInputUrl(e.target.value);
-              }}
-              placeholder="Enter image link"
-            />
+            
           </div>
           <div className="modal-btn">
             <button onClick={modalCancel}>Cancel</button>

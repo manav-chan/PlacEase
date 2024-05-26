@@ -2,10 +2,10 @@
     /* border: 1px solid red; */
     width: 100%; /* Adjust the width as needed */
     overflow: hidden; /* Hide overflowing content */
-    border-right: 2px solid #ff2600;
+    border-right: 0px solid #ff2600;
     border-radius: 0px;
     align-items: center;
-    padding-left: 10px;
+    padding-left: 30px;
     /* background-color: rgb(232, 33, 33); */
 }
 .side-content{
@@ -24,6 +24,7 @@
     background-color: white;
     color: black;
     font-weight: 700;
+    border-radius: 20px;
 }
 
 .profile-icon img{

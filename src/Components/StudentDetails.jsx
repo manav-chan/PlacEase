@@ -27,31 +27,39 @@ function StudentDetails() {
   }, [rollNumber]);
 
   if (!student) {
-    return <div>Loading...</div>;
+    return <div></div>;
   }
 
   return (
+    <div className='whole'> 
     <div className="student-details-container">
       <h1>Student Details</h1>
       <div className="student-details-item">
-        <strong>Name:</strong> {student.name}
+        <strong>Name:</strong> 
+        <h2>{student.name}</h2>
       </div>
       <div className="student-details-item">
-        <strong>Roll Number:</strong> {student.rollNumber}
+        <strong>Roll Number:</strong> 
+        <h2>{student.rollNumber}</h2>
       </div>
       <div className="student-details-item">
-        <strong>Semester:</strong> {student.semester}
+        <strong>Semester:</strong>
+        <h2>{student.semester}</h2>
       </div>
       <div className="student-details-item">
-        <strong>CGPA:</strong> {student.cgpa}
+        <strong>CGPA:</strong>
+        <h2>{student.cgpa}</h2>
       </div>
       <div className="student-details-item">
-        <strong>Specialization:</strong> {student.specialization}
+        <strong>Specialization:</strong>
+        <h2>{student.specialization}</h2>
       </div>
       <div className="student-details-item">
-        <strong>Official email id:</strong> {student.email}
+        <strong>Official email id:</strong>
+        <h2>{student.email}</h2>
       </div>
       
+    </div>
     </div>
   );
 }

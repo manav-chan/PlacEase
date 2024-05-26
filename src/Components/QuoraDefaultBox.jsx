@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from 'react';
 import "./QuoraDefaultBox.css";
 import { Avatar } from "@mui/material";
 import db, { auth } from "../firebase";
@@ -9,14 +10,15 @@ import firebase from "firebase/compat/app";
 function QuoraDefaultBox({ selectedTitle }) {
   const [Question, setquestion] = useState("");
   const user = useSelector(selectUser);
+  const [student, setStudent] = useState(null);
 
   const handleQuestion = () => {
     if (Question !== "") {
       db.collection("question").add({
         question: Question,
         timeStamp: firebase.firestore.Timestamp.now(),
-        userId: user.uid,
-        displayName: user.displayName,
+        userId: student.semester,
+        displayName: student.name,
         userImg: user.photo,
         category: selectedTitle, // Include the selected category
       });
@@ -25,6 +27,26 @@ function QuoraDefaultBox({ selectedTitle }) {
       alert("Please enter a question");
     }
   };
+  useEffect(() => {
+    // Fetch student details based on rollNumber
+    db.collection('students')
+      .doc(auth.currentUser.email.split("@")[0])
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setStudent(doc.data());
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
+  }, [auth.currentUser.email.split("@")[0]]);
+
+  if (!student) {
+    return <div></div>;
+  }
 
   return (
     <div className="Quora-Box">

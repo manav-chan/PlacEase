@@ -34,6 +34,7 @@ function Feed({ selectedTitle }) {
           userImg={question.userImg}
           PostImg={question.PostImg}
           displayname={question.displayName}
+          userId = {question.userId}
         />
       ))}
     </div>

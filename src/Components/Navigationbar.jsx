@@ -42,16 +42,12 @@ function Navigationbar() {
   }, [auth.currentUser.email.split("@")[0]]);
 
   if (!student) {
-    return <div> Loading...</div>;
+    return <div></div>;
   }
 
   return (
     <div className="navbar">
-      <div className="menu">
-        <div className="nav-icon Home">
-          <HomeOutlined/>
-        </div>
-      </div>
+      
       {/* Profile avatar with link to StudentDetails */}
       <Link to={"student.rollNumber" ? `/studentDetails/${student.rollNumber.split("@")[0]}` : "/"} className="profile-avatar-link">
         <Avatar  src={user.photo} />
@@ -59,7 +55,7 @@ function Navigationbar() {
       {/* Remaining navigation elements */}
       
         <div>
-          <h1>Welcome, {student.name}</h1>
+          <h2>Welcome, {student.name}</h2>
         </div>
         <div
           onClick={() => {

@@ -6,11 +6,14 @@
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: black;
+    background-color: #243041;
     padding: 10px 20px;
     border-radius: 40px;
     margin-bottom: 20px;
     align-self: center;
+    border: 3px solid;
+    animation: smoothBorderColorChange 3s linear infinite;
+    box-shadow: 0 5px 15px rgba(1, 1, 1, 1);
   }
   
   .quora-avatar {
@@ -43,6 +46,24 @@
   }
   
   .Quora-Box button:hover {
-    background-color: green;
+    background-color: rgb(55, 244, 55);
+    
   }
   
+  @keyframes smoothBorderColorChange {
+    0% {
+      border-color: red;
+    }
+    25% {
+      border-color: yellow;
+    }
+    50% {
+      border-color: rgb(6, 252, 6);
+    }
+    75% {
+      border-color: rgb(0, 183, 255);
+    }
+    100% {
+      border-color: red;
+    }
+  }
