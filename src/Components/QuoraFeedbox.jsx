@@ -193,32 +193,33 @@ function QuoraFeedbox(props) {
         <div className="Share">
           <CommentRounded/>
           <button onClick={answerBtn}>Answer</button>
-        </div>
-        <ReactModal
-          isOpen={open}
+         </div>
+          <ReactModal
+           isOpen={open}
           onRequestClose={() => {
             setOpen(false);
           }}
           shouldCloseOnOverlayClick={false}
           style={{
+            backgroundColor:"black",
             overlay: {
-              width: "60%",
-              height: "60%",
-              backgroundColor: "#c92c92",
-              zIndex: "1000",
-              top: "20%",
-              left: "24%",
+              width: "61%",
+              height: "18%",
+              backgroundColor: "black",
+              margin:"auto",
+              alignItems:"center",
+              border:"2px solid black",
+              
             },
             content: {
-              WebkitOverflowScrolling: "touch",
-              overflow: "auto",
+              
               outline: "none",
-              margin: "-20px",
+              margin: "-40px",
             },
           }}
         >
-          <div className="modal-ans">
-            <h3>Write your answer</h3>
+        <div className="modal-ans">
+            
             <input
               required
               type="text"
@@ -226,17 +227,18 @@ function QuoraFeedbox(props) {
               onChange={(e) => {
                 setAnswerVal(e.target.value);
               }}
-              placeholder="Start your writing"
+              placeholder="Start writing here..."
             />
-            
-          </div>
-          <div className="modal-btn">
-            <button onClick={modalCancel}>Cancel</button>
-            <button type="submit" onClick={modalSave}>
+            <div className="modal-btn">
+             
+              <button type="submit" onClick={modalSave}>
               Save
-            </button>
+             </button>
+             <button onClick={modalCancel}>Cancel</button>
+            </div>
           </div>
-        </ReactModal>
+          
+         </ReactModal>
       </div>
     </div>
   );
