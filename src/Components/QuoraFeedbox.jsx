@@ -1,17 +1,13 @@
 import { Avatar, Modal } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import "./QuoraFeedBox.css";
-import Feed from "./Feed";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  Chat,
-  ChatOutlined,
-  Message,
+  CommentOutlined,
+  CommentRounded,
   Padding,
   ShareOutlined,
-  ThumbDown,
   ThumbDownOutlined,
-  ThumbUp,
   ThumbUpOutlined,
 } from "@mui/icons-material";
 import ReactModal from "react-modal";
@@ -20,6 +16,7 @@ import {
   selectQuestionName,
   setQuestionInfo,
 } from "../features/counter/questionSlice";
+import { auth } from "../firebase";
 import db from "../firebase";
 import { selectUser } from "../features/counter/userSlice";
 import firebase from "firebase/compat/app";
@@ -33,57 +30,39 @@ function QuoraFeedbox(props) {
   const questionId = useSelector(selectQuestionId);
   const questionName = useSelector(selectQuestionName);
   const user = useSelector(selectUser);
-  //Like // Dislike
-  const [Like, setLike] = useState(false);
-  const [LikeCount, setLikeCount] = useState(0);
-  // const [Dislike, setDislike] = useState(false);
-  // const [DislikeCount, setDislikeCount] = useState(0);
 
-  const handelLike = () => {
-    if(questionId){
+  const [Like, setLike] = useState(false);
+  const [LikeCount, setLikeCount] = useState(props.postLike);
+  const [student, setStudent] = useState(null);
+
+  const handleLike = () => {
+    if (questionId) {
       if (!Like) {
         setLike(true);
-        setLikeCount(props.postLike + 1);
+        setLikeCount(LikeCount + 1);
         db.collection("question")
           .doc(questionId)
           .update({
-            postLike: LikeCount,
+            postLike: firebase.firestore.FieldValue.increment(1),
           })
           .catch((error) => {
-            console.error("Error adding document: ", error);
+            console.error("Error updating document: ", error);
           });
-        // if(DislikeCount!=0){
-        //   setDislikeCount(DislikeCount-1);
-        // }
       } else {
         setLike(false);
+        setLikeCount(LikeCount - 1);
+        db.collection("question")
+          .doc(questionId)
+          .update({
+            postLike: firebase.firestore.FieldValue.increment(1),
+          })
+          .catch((error) => {
+            console.error("Error updating document: ", error);
+          });
       }
     }
   };
 
-  // const handelDislike=(e)=>{
-  //   if(!Dislike && DislikeCount==0){
-  //     setDislike(true);
-  //     setDislikeCount(DislikeCount+1);
-  //     if(LikeCount!=0){
-  //       setLikeCount(LikeCount-1);
-  //     }
-  //   }
-  //   else{
-  //     setDislike(false);
-  //   }
-  //   // sending like count to server
-  //   db.collection("question")
-  //   .doc(questionId)
-  //   .update({
-  //     postDisLike: DislikeCount,
-  //     })
-  //   .catch((error) => {
-  //       console.error("Error adding document: ", error);
-  //     });
-  // }
-
-  //fetching answer
   useEffect(() => {
     if (questionId) {
       db.collection("question")
@@ -98,18 +77,17 @@ function QuoraFeedbox(props) {
         });
     }
   }, [questionId]);
-  //
+
   const modalSave = (e) => {
-    if (AnswerVal != "") {
-      e.preventDefault();
-      // console.log(questionId,questionName);
+    e.preventDefault();
+    if (AnswerVal !== "") {
       if (questionId) {
         db.collection("question").doc(questionId).collection("answer").add({
           answer: AnswerVal,
           timeStamp: firebase.firestore.Timestamp.now(),
           questionId: props.id,
-          userId: user.uid,
-          displayName: user.displayName,
+          userId: student.semester,
+          displayName: student.name,
           userImg: user.photo,
         });
         setAnswerVal("");
@@ -120,15 +98,37 @@ function QuoraFeedbox(props) {
       alert("Please enter your answer");
     }
   };
+
   const answerBtn = () => {
     document.getElementById("quora").style.filter = "blur(8px)";
     setOpen(true);
   };
-  // cancel
+
   const modalCancel = () => {
     document.getElementById("quora").style.filter = "blur(0px)";
     setOpen(false);
   };
+  useEffect(() => {
+    // Fetch student details based on rollNumber
+    db.collection('students')
+      .doc(auth.currentUser.email.split("@")[0])
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          setStudent(doc.data());
+        } else {
+          console.log('No such document!');
+        }
+      })
+      .catch((error) => {
+        console.log('Error getting document:', error);
+      });
+  }, [auth.currentUser.email.split("@")[0]]);
+
+  if (!student) {
+    return <div></div>;
+  }
+
   return (
     <div
       className="Profile-FeedBox"
@@ -144,43 +144,36 @@ function QuoraFeedbox(props) {
       <div className="profile-info">
         <Avatar src={props.userImg} />
         <div className="profile-info-text">
-          <h5>{props.displayname}</h5>
+          <h3 className="name">{props.displayname}</h3>
+          <h3 className="semester">Semester: {props.userId}</h3>
         </div>
+        
+
         <div className="time">
-          <p>{new Date(props.PostTime?.toDate()).toLocaleDateString()}</p>
+          <p>{new Date(props.PostTime?.toDate()).toLocaleString().replace(","," - ")}</p>
         </div>
       </div>
       <div className="Question-feedbox">
         <h3>{props.question}</h3>
-        <button onClick={answerBtn}>Answer</button>
+        
       </div>
       <div className="post__answer">
         {GetAnswer.map(({ id, answer }) => (
           <div key={id} className="answer">
             {props.id === answer.questionId ? (
-              <div>
+              <div >
                 <div className="PostUser-Profile">
-                  <img src={answer.userImg} alt="" />
-                  <h5>{answer.displayName}</h5>
-                  <p>
+                  <Avatar  className="AvatarBelow" src={answer.userImg}  />
+                  <h4>{answer.displayName}</h4>
+                  <h4>Semester: {answer.userId}</h4>
+                  <p >
                     {answer.timeStamp
-                      ? new Date(answer.timeStamp?.toDate()).toLocaleString()
+                      ? new Date(answer.timeStamp?.toDate()).toLocaleString().replace(","," - ")
                       : ""}
                   </p>
                 </div>
-                <p>
-                  {answer.answer}
-                  <br />
-                  <span>
-                    {/* <span style={{ color: "#b92b27" }}>
-                      {answer.displayName
-                        ? answer.displayName
-                        : answer.email}{" "}
-                      on{" "}
-                      {new Date(answers.timestamp?.toDate()).toLocaleString()}
-                    </span> */}
-                  </span>
-                </p>
+                <p className="para" >{answer.answer}</p>
+
               </div>
             ) : (
               ""
@@ -191,47 +184,42 @@ function QuoraFeedbox(props) {
 
       <div className="Feed-footer">
         <div className="vote">
-          <div className="Upvote" onClick={handelLike}>
+          <div className="Upvote" onClick={handleLike}>
             <ThumbUpOutlined />
-            <h4>{props.postLike}</h4>
+            <h4>{LikeCount}</h4>
           </div>
-          <div className="break">|</div>
-          <div className="Downvote">
-            <ThumbDownOutlined />
-            {/* <h4>{props.postDisLike}</h4> */}
-          </div>
+          
         </div>
-        {/* <div className="Message">
-          <ChatOutlined />
-        </div> */}
         <div className="Share">
-          <ShareOutlined />
-        </div>
-        <ReactModal
-          isOpen={open}
+          <CommentRounded/>
+          <button onClick={answerBtn}>Answer</button>
+         </div>
+          <ReactModal
+           isOpen={open}
           onRequestClose={() => {
             setOpen(false);
           }}
           shouldCloseOnOverlayClick={false}
           style={{
+            backgroundColor:"black",
             overlay: {
-              width: "60%",
-              height: "60%",
-              backgroundColor: "#c92c92",
-              zIndex: "1000",
-              top: "20%",
-              left: "24%",
+              width: "61%",
+              height: "18%",
+              backgroundColor: "black",
+              margin:"auto",
+              alignItems:"center",
+              border:"2px solid black",
+              
             },
             content: {
-              WebkitOverflowScrolling: "touch",
-              overflow: "auto",
+              
               outline: "none",
-              margin: "-20px",
+              margin: "-40px",
             },
           }}
         >
-          <div className="modal-ans">
-            <h3>Write your answer</h3>
+        <div className="modal-ans">
+            
             <input
               required
               type="text"
@@ -239,24 +227,18 @@ function QuoraFeedbox(props) {
               onChange={(e) => {
                 setAnswerVal(e.target.value);
               }}
-              placeholder="start your writing"
+              placeholder="Start writing here..."
             />
-            <input
-              type="link"
-              value={InputUrl}
-              onChange={(e) => {
-                setInputUrl(e.target.value);
-              }}
-              placeholder="Enter image link"
-            />
-          </div>
-          <div className="modal-btn">
-            <button onClick={modalCancel}>Cancel</button>
-            <button type="submit" onClick={modalSave}>
+            <div className="modal-btn">
+             
+              <button type="submit" onClick={modalSave}>
               Save
-            </button>
+             </button>
+             <button onClick={modalCancel}>Cancel</button>
+            </div>
           </div>
-        </ReactModal>
+          
+         </ReactModal>
       </div>
     </div>
   );

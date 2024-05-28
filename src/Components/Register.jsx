@@ -39,7 +39,8 @@ function Register() {
       <div className="register-box">
         <h2>Register for PlacEase</h2>
         <form>
-          <div className="user-box">
+          <div className='cred1'>
+            <div className="user-box">
             <label>Email Address</label>
             <input
               type="text"
@@ -55,6 +56,7 @@ function Register() {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          </div>
           <div className="user-box">
             <label>Name</label>
             <input
@@ -63,10 +65,13 @@ function Register() {
               onChange={(e) => setName(e.target.value)}
             />
           </div>
+          <div className='cred2'>
           <div className="user-box">
             <label>University Roll Number</label>
             <input
               type="text"
+              minLength={8}
+              maxLength={8}
               value={rollNumber}
               onChange={(e) => setRollNumber(e.target.value)}
             />
@@ -74,11 +79,16 @@ function Register() {
           <div className="user-box">
             <label>Semester</label>
             <input
-              type="text"
+              type="number"
+              min={1}
+              max={8}
+              step={1}
               value={semester}
               onChange={(e) => setSemester(e.target.value)}
             />
           </div>
+          </div>
+          <div className='cred3'>
           <div className="user-box">
             <label>Specialization</label>
             <input
@@ -90,10 +100,14 @@ function Register() {
           <div className="user-box">
             <label>CGPA</label>
             <input
-              type="text"
+              type="number"
               value={cgpa}
+              max={10}
+              min={0}
+              step={0.1}
               onChange={(e) => setCgpa(e.target.value)}
             />
+          </div>
           </div>
           <button type='submit' onClick={register}>Register</button>
         </form>

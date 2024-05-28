@@ -6,6 +6,7 @@ import { auth } from './firebase';
 import Login from './Components/Login';
 import Register from './Components/Register';
 import Quora from './Components/Quora';
+import StudentDetails from './Components/StudentDetails'; // Import StudentDetails component
 import './App.css';
 
 function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/login" element={user ? <Navigate to="/quora" /> : <Login />} />
           <Route path="/register" element={user ? <Navigate to="/quora" /> : <Register />} />
           <Route path="/quora" element={!user ? <Navigate to="/login" /> : <Quora />} />
+          <Route path="/studentDetails/:rollNumber" element={<StudentDetails />} /> {/* New route for StudentDetails */}
           <Route path="/" element={user ? <Navigate to="/quora" /> : <Navigate to="/login" />} />
         </Routes>
       </Router>
